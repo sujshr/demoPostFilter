@@ -16,6 +16,8 @@ Please extract and format the following data according to the disasterPostSchema
 ${rawPostString}
 If the text relates to natural disaster events such as floods, earthquakes, cyclones, storms, etc., return a valid JSON string according to the disasterPostSchema. Ensure:
 - Properties and values are in double quotes.
+- Fill in the state, country, city yourself as far as possible even if its not specified in the description.
+- Fill in the coordinates of respective location as well.
 - Omit optional fields if they don't exist.
 - Generate a suitable description if null.
 - Assign appropriate values for non-optional fields.
