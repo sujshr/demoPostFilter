@@ -25,7 +25,7 @@ async function main() {
 
 setInterval(async () => {
   await main();
-}, 60000);
+}, 10000);
 
 app.use(express.json());
 app.use("/stats", statsRoute);
