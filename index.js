@@ -16,14 +16,12 @@ setIO(io);
 
 const PORT = process.env.PORT || 3000;
 
+await connectDB();
+
 async function main() {
   try {
-    await connectDB();
-
     const posts = await fetchAllPosts();
     const filteredData = await filterData(posts);
-
-    console.log("Filtered Data:", filteredData);
 
     await updateDatabase(filteredData);
   } catch (error) {
