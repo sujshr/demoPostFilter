@@ -9,19 +9,26 @@ async function updateDatabase(filteredPosts) {
   try {
     for (const post of filteredPosts) {
       try {
-        const postEmbedding = await embeddings.embedDocuments([
-          post.description,
-        ]);
+        // Extract relevant fields from the location object
+        const { city, state, country } = post.location || {};
+        const locationString = [city, state, country]
+          .filter(Boolean)
+          .join(", ");
+        console.log(post.description);
+
+        // Combine the extracted location and description for embedding
+        const combinedText = `${locationString} ${post.description}`;
+
+        const postEmbedding = await embeddings.embedDocuments([combinedText]);
+        console.log("Generated embedding:", postEmbedding);
 
         const searchResults = await vectorStore.similaritySearchWithScore(
-          post.description,
-          1
+          combinedText,
+          5
         );
-
-        console.log(searchResults);
+        console.log("Search results:", searchResults);
 
         const similarityThreshold = 0.8;
-
         const similarDocument = searchResults.find(
           (result) => result[1] > similarityThreshold
         );

@@ -20,3 +20,7 @@ async function main() {
 }
 
 main();
+
+setInterval(async () => {
+  await main();
+}, 60000);

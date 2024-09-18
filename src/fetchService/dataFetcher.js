@@ -5,11 +5,11 @@ export async function fetchAllPosts() {
   try {
     const db = clientRaw.db();
 
-    const collection = db.collection("allPosts");
+    const collection = db.collection("allposts");
 
-    allPosts = await collection.find({}).toArray();
+    allPosts = await collection.find({ filtered: false }).toArray();
 
-    console.log("Fetched posts from allPosts collection");
+    console.log("Fetched posts with filtered: false from allPosts collection");
   } catch (error) {
     console.error("Error fetching data from MongoDB:", error);
   }

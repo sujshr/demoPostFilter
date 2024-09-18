@@ -8,14 +8,20 @@ async function transformPost(rawPost) {
   try {
     const rawPostString = JSON.stringify(rawPost);
 
-    console.log(rawPost);
+    console.log(rawPostString);
     const prompt = `
-    This is the disasterPostSchema:
-    ${schemaDescription}
-    Please extract and format the following data according to the disasterPostSchema from this JSON object:
-    ${rawPostString}
-    If the post is related to disasters and natural disasters events such as earthquakes, floods, and such then make sure that you return a valid JSON string where the properties and values are enclosed in double quotes and can be passed into JSON.parse() method without errors and strictly adhere to the zod schema provided in the disasterPostSchema. Also, don't assign null as values for any of the fields that are optional if it doesn't exist. Simply omit them. For values that aren't optional, include appropriate value according to schema. If the description is null, generate a suitable one and assign it to the field. If the post is not related to disasters, ignore them.
-  `;
+This is the disasterPostSchema:
+${schemaDescription}
+Please extract and format the following data according to the disasterPostSchema from this JSON object:
+${rawPostString}
+If the text relates to natural disaster events such as floods, earthquakes, cyclones, storms, etc., return a valid JSON string according to the disasterPostSchema. Ensure:
+- Properties and values are in double quotes.
+- Omit optional fields if they don't exist.
+- Generate a suitable description if null.
+- Assign appropriate values for non-optional fields.
+- If coordinates are missing, provide them based on the location if available.
+- If the post is not disaster-related, ignore it.
+`;
 
     const response = await llm.invoke(prompt);
 
@@ -45,30 +51,16 @@ async function transformPost(rawPost) {
   }
 }
 
-import { clientDb } from "../connection/dbConnection.js";
 export async function filterData(rawPosts) {
-    const filteredPosts = [];
-    let c = 1;
-    for (const post of rawPosts) {
-      const transformedPost = await transformPost(post);
-      console.log(c);
-      c++;
-      if (transformedPost) {
-        filteredPosts.push(transformedPost);
-      }
+  const filteredPosts = [];
+  let c = 1;
+  for (const post of rawPosts) {
+    const transformedPost = await transformPost(post);
+    console.log(c);
+    c++;
+    if (transformedPost) {
+      filteredPosts.push(transformedPost);
     }
-//   let filteredPosts = [];
-//   try {
-//     const db = clientDb.db();
-
-//     const collection = db.collection("filteredPosts");
-
-//     filteredPosts = await collection.find({}).toArray();
-
-//     console.log("Fetched posts from filteredPosts collection");
-//   } catch (error) {
-//     console.error("Error fetching data from MongoDB:", error);
-//   }
-
+  }
   return filteredPosts;
 }
