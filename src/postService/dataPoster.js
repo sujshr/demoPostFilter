@@ -24,7 +24,6 @@ async function updateDatabase(filteredPosts) {
         const combinedText = `${locationString} ${post.description}`;
 
         const postEmbedding = await embeddings.embedDocuments([combinedText]);
-        console.log("Generated embedding:", postEmbedding);
 
         const searchResults = await vectorStore.similaritySearchWithScore(
           combinedText,
@@ -32,15 +31,15 @@ async function updateDatabase(filteredPosts) {
         );
         console.log("Search results:", searchResults);
 
-        const similarityThreshold = 0.9;
+        const similarityThreshold = 0.8;
         const similarDocument = searchResults.find(
           (result) => result[1] > similarityThreshold
         );
 
-        console.log(similarDocument);
         if (similarDocument && similarDocument[0]?.metadata?._id) {
           const documentId = similarDocument[0].metadata._id;
-          console.log(`Found similar document with ID: ${documentId}`);
+          console.log(`Found similar document with ID: ${documentId} \n`);
+          console.log(similarDocument);
 
           const query = { _id: documentId };
           const update = {
@@ -49,9 +48,11 @@ async function updateDatabase(filteredPosts) {
           };
 
           await collection.updateOne(query, update);
-          console.log(`Incremented numberOfPosts for post ID: ${documentId}`);
+          console.log(
+            `Incremented numberOfPosts for post ID: ${documentId} \n`
+          );
         } else {
-          console.log("No similar document found, inserting a new post.");
+          console.log("No similar document found, inserting a new post. \n");
           const newPost = {
             ...post,
             embedding: postEmbedding,
@@ -65,7 +66,7 @@ async function updateDatabase(filteredPosts) {
             const { embedding, ...postWithoutEmbedding } = newPost;
             io.emit("newEntry", postWithoutEmbedding);
             console.log(
-              "Emitted 'newEntry' event with new post excluding embedding."
+              "Emitted 'newEntry' event with new post excluding embedding. \n"
             );
           }
         }
@@ -75,7 +76,7 @@ async function updateDatabase(filteredPosts) {
     }
 
     console.log(
-      "Database updated with filtered disaster posts and embeddings."
+      "Database updated with filtered disaster posts and embeddings. \n"
     );
   } catch (error) {
     console.error("Error updating database:", error);

@@ -1,23 +1,34 @@
 import { clientRaw } from "../connection/dbConnection.js";
 
 export async function fetchAllPosts() {
-  let allPosts = [];
+  let updatedPosts = [];
   try {
     const db = clientRaw.db();
     const collection = db.collection("allposts");
 
-    allPosts = await collection
-      .find({
-        numberOfTimesNeededToBeFiltered: { $gt: 0 },
-      })
+    updatedPosts = await collection
+      .find({ numberOfTimesNeededToBeFiltered: { $gt: 0 } })
       .toArray();
 
+    const result = await collection.updateMany(
+      { numberOfTimesNeededToBeFiltered: { $gt: 0 } },
+      [
+        {
+          $set: {
+            numberOfTimesNeededToBeFiltered: {
+              $subtract: ["$numberOfTimesNeededToBeFiltered", 1],
+            },
+          },
+        },
+      ]
+    );
+
     console.log(
-      "Fetched posts from allPosts collection where numberOfTimesNeededToBeFiltered > 0"
+      `Fetched ${result.modifiedCount} posts and updated them \n`
     );
   } catch (error) {
-    console.error("Error fetching data from MongoDB:", error);
+    console.error("Error updating and fetching data from MongoDB:", error);
   }
 
-  return allPosts;
+  return updatedPosts;
 }

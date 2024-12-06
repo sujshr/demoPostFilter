@@ -8,7 +8,6 @@ router.get("/", async (req, res) => {
     const db = clientDb.db();
     const collection = db.collection("disasterPosts");
 
-    // Fetch all posts, excluding the "embedding" field
     const disasterPosts = await collection
       .find({}, { projection: { embedding: 0 } })
       .toArray();

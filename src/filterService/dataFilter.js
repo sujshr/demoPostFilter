@@ -3,7 +3,6 @@ import {
   schemaDescription,
 } from "../schemas/postSchema.js";
 import { llm } from "../llm/GoogleGenerativeAI.js";
-import { clientRaw } from "../connection/dbConnection.js";
 
 async function transformPost(rawPost) {
   try {
@@ -58,21 +57,10 @@ If the text relates to natural disaster events such as floods, earthquakes, cycl
 
 export async function filterData(rawPosts) {
   const filteredPosts = [];
-  const db = clientRaw.db();
-  const collection = db.collection("allposts");
 
-  let c = 1;
   for (const post of rawPosts) {
     if (post.numberOfTimesNeededToBeFiltered > 0) {
-      await collection.updateOne(
-        { _id: post._id },
-        { $inc: { numberOfTimesNeededToBeFiltered: -1 } }
-      );
-
       const transformedPost = await transformPost(post);
-
-      console.log(c);
-      c++;
 
       if (transformedPost) {
         filteredPosts.push(transformedPost);
