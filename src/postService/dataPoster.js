@@ -31,7 +31,7 @@ async function updateDatabase(filteredPosts) {
         );
         console.log("Search results:", searchResults);
 
-        const similarityThreshold = 0.8;
+        const similarityThreshold = 0.9;
         const similarDocument = searchResults.find(
           (result) => result[1] > similarityThreshold
         );

@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import cors from "cors"; 
 import { connectDB } from "./src/connection/dbConnection.js";
 import { fetchAllPosts } from "./src/fetchService/dataFetcher.js";
 import { filterData } from "./src/filterService/dataFilter.js";
@@ -14,7 +15,9 @@ const server = http.createServer(app);
 const io = initializeSocketIO(server);
 setIO(io);
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
 
 await connectDB();
 

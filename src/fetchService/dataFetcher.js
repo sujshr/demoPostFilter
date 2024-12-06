@@ -4,7 +4,7 @@ export async function fetchAllPosts() {
   let updatedPosts = [];
   try {
     const db = clientRaw.db();
-    const collection = db.collection("allposts");
+    const collection = db.collection("unfilteredposts");
 
     updatedPosts = await collection
       .find({ numberOfTimesNeededToBeFiltered: { $gt: 0 } })

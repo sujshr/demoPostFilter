@@ -56,17 +56,17 @@ const disasterPostSchema = z.object({
 const schemaDescription = `
 {
   id: string | number | null,
-  type: string | null (optional),
+  type: string,
   location: {
-    city: string | null (optional),
-    state: string | null (optional),
-    country: string | null (optional),
+    city: string,
+    state: string,
+    country: string,
     coordinates: {
-      latitude: number | null (optional),
-      longitude: number | null (optional)
-    } (optional)
-  } (optional),
-  timestamp: string | null (optional),
+      latitude: number,
+      longitude: number
+    }
+  } ,
+  timestamp: string,
   description: string | null (optional),
   criticality: {
     magnitude: number | null (optional),
