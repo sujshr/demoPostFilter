@@ -1,14 +1,11 @@
 import express from "express";
-import { clientDb } from "../connection/dbConnection.js";
+import { disasterPostsCollection } from "../connection/dbConnection.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const db = clientDb.db();
-    const collection = db.collection("disasterPosts");
-
-    const disasterPosts = await collection
+    const disasterPosts = await disasterPostsCollection
       .find({}, { projection: { embedding: 0 } })
       .toArray();
 
