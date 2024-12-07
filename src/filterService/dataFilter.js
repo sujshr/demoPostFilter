@@ -63,7 +63,10 @@ export async function filterData(rawPosts) {
       const transformedPost = await transformPost(post);
 
       if (transformedPost) {
-        filteredPosts.push(transformedPost);
+        filteredPosts.push({
+          originalPost: post,
+          transformedPost: transformedPost,
+        });
       }
     }
   }

@@ -15,13 +15,13 @@ async function updateDatabase(filteredPosts) {
   try {
     for (const post of filteredPosts) {
       try {
-        const { city, state, country } = post.location || {};
+        const { city, state, country } = post.transformedPost.location || {};
         const locationString = [city, state, country]
           .filter(Boolean)
           .join(", ");
-        console.log(post.description);
+        console.log(post.transformedPost.description);
 
-        const combinedText = `${locationString} ${post.description}`;
+        const combinedText = `${locationString} ${post.transformedPost.type} ${post.transformedPost.description}`;
 
         const postEmbedding = await embeddings.embedDocuments([combinedText]);
 
@@ -44,23 +44,24 @@ async function updateDatabase(filteredPosts) {
           const query = { _id: documentId };
           const update = {
             $inc: { numberOfPosts: 1 },
-            $set: { embedding: postEmbedding },
+            $push: { posts: post.originalPost },
           };
 
           await collection.updateOne(query, update);
           console.log(
-            `Incremented numberOfPosts for post ID: ${documentId} \n`
+            `Incremented numberOfPosts and updated "posts" array for post ID: ${documentId} \n`
           );
         } else {
           console.log("No similar document found, inserting a new post. \n");
           const newPost = {
-            ...post,
+            ...post.transformedPost,
             embedding: postEmbedding,
             numberOfPosts: 1,
+            posts: [post.originalPost],
           };
 
-          await collection.insertOne(newPost);
-          console.log(`Inserted new post with ID: ${post.id}`);
+          const insertResult = await collection.insertOne(newPost);
+          console.log(`Inserted new post with ID: ${insertResult.insertedId}`);
 
           if (io) {
             const { embedding, ...postWithoutEmbedding } = newPost;

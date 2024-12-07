@@ -17,7 +17,6 @@ const mediaAttachmentSchema = z
   .nullable();
 
 const disasterPostSchema = z.object({
-  id: z.union([z.string(), z.number()]).nullable(),
   type: z.string().optional().nullable(),
   location: z
     .object({
@@ -55,7 +54,6 @@ const disasterPostSchema = z.object({
 
 const schemaDescription = `
 {
-  id: string | number | null,
   type: string,
   location: {
     city: string,

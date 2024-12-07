@@ -7,11 +7,17 @@ export async function fetchAllPosts() {
     const collection = db.collection("unfilteredposts");
 
     updatedPosts = await collection
-      .find({ numberOfTimesNeededToBeFiltered: { $gt: 0 } })
+      .find({
+        numberOfTimesNeededToBeFiltered: { $gt: 0 },
+        "post.imageUrl": null,
+      })
       .toArray();
 
     const result = await collection.updateMany(
-      { numberOfTimesNeededToBeFiltered: { $gt: 0 } },
+      {
+        numberOfTimesNeededToBeFiltered: { $gt: 0 },
+        "post.imageUrl": null,
+      },
       [
         {
           $set: {
@@ -23,9 +29,7 @@ export async function fetchAllPosts() {
       ]
     );
 
-    console.log(
-      `Fetched ${result.modifiedCount} posts and updated them \n`
-    );
+    console.log(`Fetched ${result.modifiedCount} posts and updated them \n`);
   } catch (error) {
     console.error("Error updating and fetching data from MongoDB:", error);
   }
