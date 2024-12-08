@@ -9,6 +9,7 @@ import { fetchAllPosts } from "./src/fetchService/dataFetcher.js";
 import { filterData } from "./src/filterService/dataFilter.js";
 import { updateDatabase } from "./src/postService/dataPoster.js";
 import statsRoute from "./src/routes/statsRoute.js";
+import reportRoute from "./src/routes/ReportRoute.js"
 
 import { initializeSocketIO } from "./src/socket/socketConfig.js";
 import { setIO } from "./src/postService/dataPoster.js";
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use("/stats", statsRoute);
+app.use("/track-report",reportRoute);
 
 await connectDB();
 
@@ -85,3 +87,4 @@ server.listen(PORT, async () => {
 
   await runMain();
 });
+
