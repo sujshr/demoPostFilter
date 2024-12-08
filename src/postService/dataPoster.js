@@ -1,4 +1,4 @@
-import { clientDb } from "../connection/dbConnection.js";
+import { disasterPostsCollection } from "../connection/dbConnection.js";
 import { embeddings } from "../llm/Embeddings.js";
 import { vectorStore } from "../llm/MongoDbVectoreStore.js";
 
@@ -9,9 +9,6 @@ const setIO = (socketIO) => {
 };
 
 async function updateDatabase(filteredPosts) {
-  const db = clientDb.db();
-  const collection = db.collection("disasterPosts");
-
   try {
     for (const post of filteredPosts) {
       try {
@@ -47,7 +44,7 @@ async function updateDatabase(filteredPosts) {
             $push: { posts: post.originalPost },
           };
 
-          await collection.updateOne(query, update);
+          await disasterPostsCollection.updateOne(query, update);
           console.log(
             `Incremented numberOfPosts and updated "posts" array for post ID: ${documentId} \n`
           );
@@ -60,7 +57,7 @@ async function updateDatabase(filteredPosts) {
             posts: [post.originalPost],
           };
 
-          const insertResult = await collection.insertOne(newPost);
+          const insertResult = await disasterPostsCollection.insertOne(newPost);
           console.log(`Inserted new post with ID: ${insertResult.insertedId}`);
 
           if (io) {

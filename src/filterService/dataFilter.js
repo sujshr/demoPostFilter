@@ -44,6 +44,7 @@ If the text relates to natural disaster events such as floods, earthquakes, cycl
 
     try {
       const disasterPostData = JSON.parse(jsonString);
+
       return disasterPostSchema.parse(disasterPostData);
     } catch (error) {
       console.error("Error parsing JSON:", error);
@@ -59,15 +60,13 @@ export async function filterData(rawPosts) {
   const filteredPosts = [];
 
   for (const post of rawPosts) {
-    if (post.numberOfTimesNeededToBeFiltered > 0) {
-      const transformedPost = await transformPost(post);
+    const transformedPost = await transformPost(post);
 
-      if (transformedPost) {
-        filteredPosts.push({
-          originalPost: post,
-          transformedPost: transformedPost,
-        });
-      }
+    if (transformedPost) {
+      filteredPosts.push({
+        originalPost: post,
+        transformedPost: transformedPost,
+      });
     }
   }
 

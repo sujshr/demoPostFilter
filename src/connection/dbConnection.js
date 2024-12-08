@@ -1,16 +1,17 @@
 import { MongoClient } from "mongodb";
 import "dotenv/config";
 
-const clientRaw = new MongoClient(process.env.MONGODB_ATLAS_URI_RAW);
 const clientDb = new MongoClient(process.env.MONGODB_ATLAS_URI);
 const clientReport = new MongoClient(process.env.MONGODB_ATLAS_URI_REPORT)
 
+let unfilteredPostsCollection;
+let disasterPostsCollection;
+
 export async function connectDB() {
   try {
-    await clientRaw.connect();
-    console.log("Successfully connected to DemoSocialMedia Database! \n");
-
     await clientDb.connect();
+    unfilteredPostsCollection = clientDb.db().collection("unfilteredposts");
+    disasterPostsCollection = clientDb.db().collection("disasterPosts");
     console.log("Successfully connected to Sahayog Database! \n");
 
     await clientReport.connect();
@@ -22,4 +23,4 @@ export async function connectDB() {
   }
 }
 
-export { clientRaw, clientDb ,clientReport};
+export { clientDb, unfilteredPostsCollection, disasterPostsCollection,clientReport };
